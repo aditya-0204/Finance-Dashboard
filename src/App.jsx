@@ -228,6 +228,15 @@ function AppShell({ session, onLogout }) {
           </p>
         </div>
 
+        <div className="sidebar-accent">
+          <span className="accent-label">Live posture</span>
+          <strong>{session.user.role} access</strong>
+          <p>
+            Route visibility adapts in the UI, while the backend keeps the final
+            authority over every action.
+          </p>
+        </div>
+
         <nav className="nav-list" aria-label="Primary">
           {navigation.map((item) => (
             <NavLink
@@ -282,32 +291,62 @@ function LoginPage({ onLogin }) {
   return (
     <div className="login-screen">
       <section className="login-hero">
-        <p className="eyebrow">Finance Dashboard Backend</p>
-        <h1>Backend assignment, presented through a routed dashboard.</h1>
-        <p className="lead-copy">
-          Pick a seeded account to see how the backend changes behavior by role.
-          The UI uses <code>react-router-dom</code>, while the API enforces the
-          real access checks.
-        </p>
-        {error ? <p className="error-banner">{error}</p> : null}
-      </section>
+        <div className="login-copy">
+          <p className="eyebrow">Finance Dashboard Backend</p>
+          <h1>Backend assignment, presented as a clean executive dashboard.</h1>
+          <p className="lead-copy">
+            Pick a seeded account to see how the backend changes behavior by
+            role. The UI uses <code>react-router-dom</code>, while the API
+            enforces the real access checks.
+          </p>
+          <div className="hero-chips">
+            <span>RBAC</span>
+            <span>Summaries</span>
+            <span>Pagination</span>
+            <span>Soft delete</span>
+          </div>
+          <div className="hero-stat-grid">
+            <div className="hero-stat">
+              <strong>3</strong>
+              <span>Active roles</span>
+            </div>
+            <div className="hero-stat">
+              <strong>8</strong>
+              <span>Seeded records</span>
+            </div>
+            <div className="hero-stat">
+              <strong>1</strong>
+              <span>Unified API</span>
+            </div>
+          </div>
+        </div>
 
-      <section className="account-grid">
-        {demoAccounts.map((account) => (
-          <article key={account.email} className="account-card">
-            <p className="account-role">{account.role}</p>
-            <h2>{account.email}</h2>
-            <p>{account.detail}</p>
-            <button
-              type="button"
-              className="primary-button"
-              disabled={loadingEmail === account.email}
-              onClick={() => startDemoSession(account.email)}
-            >
-              {loadingEmail === account.email ? 'Signing in...' : 'Use account'}
-            </button>
-          </article>
-        ))}
+        <div className="login-panel">
+          <div className="login-panel-head">
+            <p className="eyebrow">Demo Access</p>
+            <h2>Choose a role to continue</h2>
+          </div>
+          {error ? <p className="error-banner">{error}</p> : null}
+          <section className="account-grid">
+            {demoAccounts.map((account) => (
+              <article key={account.email} className="account-card">
+                <p className="account-role">{account.role}</p>
+                <h2>{account.email}</h2>
+                <p>{account.detail}</p>
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={loadingEmail === account.email}
+                  onClick={() => startDemoSession(account.email)}
+                >
+                  {loadingEmail === account.email
+                    ? 'Signing in...'
+                    : 'Use account'}
+                </button>
+              </article>
+            ))}
+          </section>
+        </div>
       </section>
     </div>
   )
@@ -347,15 +386,44 @@ function OverviewPage({ token }) {
 
   return (
     <div className="page-stack">
-      <section className="page-header">
-        <div>
-          <p className="eyebrow">Dashboard Summary APIs</p>
-          <h2>At-a-glance financial performance</h2>
+      <section className="overview-hero">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Dashboard Summary APIs</p>
+            <h2>At-a-glance financial performance</h2>
+          </div>
+          <p className="header-copy">
+            This view is available to every active role, but the backend still
+            controls what each user can do beyond summaries.
+          </p>
         </div>
-        <p className="header-copy">
-          This view is available to every active role, but the backend still
-          controls what each user can do beyond summaries.
-        </p>
+
+        <div className="spotlight-grid">
+          <article className="spotlight-card spotlight-primary">
+            <span>Net operating position</span>
+            <strong>{formatCurrency(summary.totals.netBalance)}</strong>
+            <p>
+              Calculated from all active income and expense entries currently in
+              the system.
+            </p>
+          </article>
+
+          <article className="spotlight-card">
+            <span>Income coverage</span>
+            <strong>
+              {summary.totals.expenses === 0
+                ? 'N/A'
+                : `${(summary.totals.income / summary.totals.expenses).toFixed(1)}x`}
+            </strong>
+            <p>Simple ratio useful for a compact executive summary.</p>
+          </article>
+
+          <article className="spotlight-card">
+            <span>Recent activity</span>
+            <strong>{summary.recentActivity.length} items</strong>
+            <p>Fresh finance movements surfaced for the dashboard feed.</p>
+          </article>
+        </div>
       </section>
 
       <section className="metric-grid">
@@ -382,7 +450,7 @@ function OverviewPage({ token }) {
           </div>
           <div className="list-stack">
             {summary.categoryTotals.map((item) => (
-              <div key={item.category} className="list-row">
+              <div key={item.category} className="list-row category-row">
                 <div>
                   <strong>{item.category}</strong>
                   <span>
@@ -390,7 +458,21 @@ function OverviewPage({ token }) {
                     {formatCurrency(item.expenses)}
                   </span>
                 </div>
-                <strong>{formatCurrency(item.total)}</strong>
+                <div className="trend-meta">
+                  <div className="mini-bar">
+                    <span
+                      style={{
+                        width: `${Math.min(
+                          100,
+                          Math.abs(item.total) /
+                            Math.max(summary.totals.income, summary.totals.expenses, 1) *
+                            100,
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                  <strong>{formatCurrency(item.total)}</strong>
+                </div>
               </div>
             ))}
           </div>
@@ -403,15 +485,43 @@ function OverviewPage({ token }) {
           </div>
           <div className="list-stack">
             {summary.monthlyTrends.map((item) => (
-              <div key={item.month} className="list-row">
-                <div>
-                  <strong>{formatMonth(item.month)}</strong>
-                  <span>
-                    Income {formatCurrency(item.income)} / Expense{' '}
-                    {formatCurrency(item.expenses)}
-                  </span>
+              <div key={item.month} className="trend-block">
+                <div className="list-row trend-heading">
+                  <div>
+                    <strong>{formatMonth(item.month)}</strong>
+                    <span>
+                      Income {formatCurrency(item.income)} / Expense{' '}
+                      {formatCurrency(item.expenses)}
+                    </span>
+                  </div>
+                  <strong>{formatCurrency(item.net)}</strong>
                 </div>
-                <strong>{formatCurrency(item.net)}</strong>
+                <div className="trend-bars">
+                  <div className="trend-bar trend-income">
+                    <span
+                      style={{
+                        width: `${Math.min(
+                          100,
+                          (item.income /
+                            Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                            100,
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="trend-bar trend-expense">
+                    <span
+                      style={{
+                        width: `${Math.min(
+                          100,
+                          (item.expenses /
+                            Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                            100,
+                        )}%`,
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -423,16 +533,18 @@ function OverviewPage({ token }) {
           <h3>Recent activity</h3>
           <span>Most recent non-deleted records</span>
         </div>
-        <div className="list-stack">
+        <div className="activity-grid">
           {summary.recentActivity.map((record) => (
-            <div key={record.id} className="list-row">
-              <div>
-                <strong>{record.category}</strong>
-                <span>
-                  {record.type} on {formatDate(record.date)}
-                </span>
+            <div key={record.id} className="activity-card">
+              <span className={`type-badge type-badge-${record.type}`}>
+                {record.type}
+              </span>
+              <strong>{record.category}</strong>
+              <p>{record.notes || 'No description provided.'}</p>
+              <div className="activity-meta">
+                <span>{formatDate(record.date)}</span>
+                <strong>{formatCurrency(record.amount)}</strong>
               </div>
-              <strong>{formatCurrency(record.amount)}</strong>
             </div>
           ))}
         </div>
@@ -963,7 +1075,7 @@ function UsersPage({ session }) {
                 <div>
                   <strong>{user.name}</strong>
                   <span>
-                    {user.email} · {user.role} · {user.status}
+                    {user.email} - {user.role} - {user.status}
                   </span>
                 </div>
                 <button
