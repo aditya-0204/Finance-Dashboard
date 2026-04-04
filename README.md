@@ -1,5 +1,4 @@
 # Finance Operations Dashboard
-
 This project delivers a finance operations dashboard with governed access controls, record management, and executive reporting:
 
 - React frontend with `react-router-dom`
@@ -8,9 +7,7 @@ This project delivers a finance operations dashboard with governed access contro
 - Role-based access control enforced by the backend
 
 ## Features
-
 ### Core requirements covered
-
 - User creation and management
 - Role assignment for `viewer`, `analyst`, and `admin`
 - Active and inactive user states
@@ -21,13 +18,11 @@ This project delivers a finance operations dashboard with governed access contro
 - Persistent local storage in `server/data/storage.json`
 
 ### Optional enhancements included
-
 - Mock token authentication
 - Pagination for record listing
 - Soft delete for records
 
 ## Access model
-
 - `viewer`: executive summary access
 - `analyst`: reporting and record review access
 - `admin`: full record and user administration access
@@ -35,7 +30,6 @@ This project delivers a finance operations dashboard with governed access contro
 The frontend adapts navigation by account profile, while the backend remains the enforcement layer for every protected action.
 
 ## Seeded accounts
-
 Use any of these on the login screen:
 
 - `admin@finboard.local`
@@ -47,9 +41,7 @@ An inactive account is also included for access-control testing:
 - `inactive@finboard.local`
 
 ## API overview
-
 ### Auth
-
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 
