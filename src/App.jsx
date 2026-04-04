@@ -15,17 +15,17 @@ const demoAccounts = [
   {
     role: 'Admin',
     email: 'admin@finboard.local',
-    detail: 'Full access to users, records, and summaries',
+    detail: 'Full operational access across records, reporting, and user administration.',
   },
   {
     role: 'Analyst',
     email: 'analyst@finboard.local',
-    detail: 'Can inspect records and analytics but cannot edit data',
+    detail: 'Access to operational records and reporting for review and analysis.',
   },
   {
     role: 'Viewer',
     email: 'viewer@finboard.local',
-    detail: 'Can only access dashboard-level summary information',
+    detail: 'Read-only access to executive reporting and portfolio-level metrics.',
   },
 ]
 
@@ -46,6 +46,22 @@ const blankUserForm = {
 
 function hasPermission(user, permission) {
   return user?.permissions?.includes(permission)
+}
+
+function formatRole(value) {
+  if (!value) {
+    return ''
+  }
+
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function formatStatus(value) {
+  if (!value) {
+    return ''
+  }
+
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 function formatCurrency(value) {
@@ -220,20 +236,20 @@ function AppShell({ session, onLogout }) {
     <div className="app-shell">
       <aside className="sidebar">
         <div>
-          <p className="eyebrow">Finance Assignment</p>
-          <h1>Control Center</h1>
+          <p className="eyebrow">Finance Operations</p>
+          <h1>Operations Console</h1>
           <p className="sidebar-copy">
-            Role-based access, summaries, validation, and persisted finance
-            records in one submission.
+            A unified workspace for reporting, financial records, access
+            controls, and operational oversight.
           </p>
         </div>
 
         <div className="sidebar-accent">
-          <span className="accent-label">Live posture</span>
-          <strong>{session.user.role} access</strong>
+          <span className="accent-label">Access Profile</span>
+          <strong>{formatRole(session.user.role)} workspace</strong>
           <p>
-            Route visibility adapts in the UI, while the backend keeps the final
-            authority over every action.
+            Navigation adapts to the signed-in account, while the API enforces
+            the underlying authorization policy.
           </p>
         </div>
 
@@ -252,12 +268,12 @@ function AppShell({ session, onLogout }) {
         </nav>
 
         <div className="profile-card">
-          <p className="profile-role">{session.user.role}</p>
+          <p className="profile-role">{formatRole(session.user.role)}</p>
           <strong>{session.user.name}</strong>
           <span>{session.user.email}</span>
-          <span className="status-pill">{session.user.status}</span>
+          <span className="status-pill">{formatStatus(session.user.status)}</span>
           <button type="button" className="ghost-button" onClick={onLogout}>
-            Sign out
+            Sign Out
           </button>
         </div>
 
@@ -292,18 +308,18 @@ function LoginPage({ onLogin }) {
     <div className="login-screen">
       <section className="login-hero">
         <div className="login-copy">
-          <p className="eyebrow">Finance Dashboard Backend</p>
-          <h1>Backend assignment, presented as a clean executive dashboard.</h1>
+          <p className="eyebrow">Finance Operations Platform</p>
+          <h1>Professional financial oversight with secure, role-aware workflows.</h1>
           <p className="lead-copy">
-            Pick a seeded account to see how the backend changes behavior by
-            role. The UI uses <code>react-router-dom</code>, while the API
-            enforces the real access checks.
+            Sign in with a seeded workspace account to review reporting,
+            operational records, and governed access controls. The interface
+            adapts to the user profile while the API enforces every permission.
           </p>
           <div className="hero-chips">
-            <span>RBAC</span>
-            <span>Summaries</span>
+            <span>Access Control</span>
+            <span>Reporting</span>
             <span>Pagination</span>
-            <span>Soft delete</span>
+            <span>Audit-Safe Deletes</span>
           </div>
           <div className="hero-stat-grid">
             <div className="hero-stat">
@@ -323,8 +339,8 @@ function LoginPage({ onLogin }) {
 
         <div className="login-panel">
           <div className="login-panel-head">
-            <p className="eyebrow">Demo Access</p>
-            <h2>Choose a role to continue</h2>
+            <p className="eyebrow">Workspace Access</p>
+            <h2>Select an account to continue</h2>
           </div>
           {error ? <p className="error-banner">{error}</p> : null}
           <section className="account-grid">
@@ -341,7 +357,7 @@ function LoginPage({ onLogin }) {
                 >
                   {loadingEmail === account.email
                     ? 'Signing in...'
-                    : 'Use account'}
+                    : 'Open workspace'}
                 </button>
               </article>
             ))}
@@ -389,12 +405,12 @@ function OverviewPage({ token }) {
       <section className="overview-hero">
         <div className="page-header">
           <div>
-            <p className="eyebrow">Dashboard Summary APIs</p>
-            <h2>At-a-glance financial performance</h2>
+            <p className="eyebrow">Executive Overview</p>
+            <h2>Financial performance at a glance</h2>
           </div>
           <p className="header-copy">
-            This view is available to every active role, but the backend still
-            controls what each user can do beyond summaries.
+            A consolidated summary of portfolio activity, category performance,
+            and recent financial movement.
           </p>
         </div>
 
@@ -419,9 +435,9 @@ function OverviewPage({ token }) {
           </article>
 
           <article className="spotlight-card">
-            <span>Recent activity</span>
+            <span>Latest activity</span>
             <strong>{summary.recentActivity.length} items</strong>
-            <p>Fresh finance movements surfaced for the dashboard feed.</p>
+            <p>Recent transactions surfaced for faster operational review.</p>
           </article>
         </div>
       </section>
@@ -445,8 +461,8 @@ function OverviewPage({ token }) {
       <section className="two-column">
         <article className="panel">
           <div className="panel-header">
-            <h3>Category-wise totals</h3>
-            <span>Net contribution by category after expenses</span>
+            <h3>Category performance</h3>
+            <span>Net contribution by category after expense allocation</span>
           </div>
           <div className="list-stack">
             {summary.categoryTotals.map((item) => (
@@ -482,7 +498,7 @@ function OverviewPage({ token }) {
           <div className="panel-header">
             <div>
               <h3>Monthly trend</h3>
-              <span>Blue shows income and amber shows expenses for each month</span>
+              <span>Monthly movement comparing income and expense trends</span>
             </div>
             <div className="chart-legend">
               <span className="legend-item">
@@ -555,7 +571,7 @@ function OverviewPage({ token }) {
       <article className="panel">
         <div className="panel-header">
           <h3>Recent activity</h3>
-          <span>Most recent non-deleted records</span>
+          <span>Most recent active records</span>
         </div>
         <div className="activity-grid">
           {summary.recentActivity.map((record) => (
@@ -698,7 +714,7 @@ function RecordsPage({ session }) {
 
   function beginEdit(record) {
     setError('')
-    setNotice(`Editing record: ${record.category} on ${record.date}`)
+    setNotice(`Editing ${record.category} dated ${record.date}.`)
     setEditingId(record.id)
     setForm({
       amount: String(record.amount),
@@ -718,7 +734,7 @@ function RecordsPage({ session }) {
 
   async function deleteRecord(id) {
     const confirmed = window.confirm(
-      'Are you sure you want to delete this record? This performs a soft delete.',
+      'Delete this record? It will be archived and removed from active reporting.',
     )
 
     if (!confirmed) {
@@ -751,11 +767,11 @@ function RecordsPage({ session }) {
       <section className="page-header">
         <div>
           <p className="eyebrow">Financial Records</p>
-          <h2>Filtered record access with backend pagination</h2>
+          <h2>Operational records workspace</h2>
         </div>
         <p className="header-copy">
-          Analysts can read this data. Admins can create, update, and soft
-          delete records.
+          Search, review, and maintain financial records with server-side
+          validation, filtering, and pagination.
         </p>
       </section>
 
@@ -765,7 +781,7 @@ function RecordsPage({ session }) {
       <section className="panel">
         <div className="panel-header">
           <h3>Filters</h3>
-          <span>Type, category, date range, and paging</span>
+          <span>Refine the record set by type, category, date, and status</span>
         </div>
         <div className="filter-grid">
           <select
@@ -801,7 +817,7 @@ function RecordsPage({ session }) {
                   updateFilter('includeDeleted', event.target.checked)
                 }
               />
-              Include soft-deleted
+              Include archived records
             </label>
           ) : null}
         </div>
@@ -811,7 +827,7 @@ function RecordsPage({ session }) {
         <form ref={recordFormRef} className="panel form-panel" onSubmit={submitRecord}>
           <div className="panel-header">
             <h3>{editingId ? 'Update record' : 'Create record'}</h3>
-            <span>Validation happens on the backend before persistence</span>
+            <span>All changes are validated by the API before they are stored</span>
           </div>
           <div className="form-grid">
             <input
@@ -865,7 +881,7 @@ function RecordsPage({ session }) {
               {editingId ? 'Save changes' : 'Create record'}
             </button>
             <button type="button" className="ghost-button" onClick={resetForm}>
-              Clear
+              Reset form
             </button>
           </div>
         </form>
@@ -876,8 +892,8 @@ function RecordsPage({ session }) {
           <h3>Records</h3>
           <span>
             {loading
-              ? 'Fetching records...'
-              : `${pagination.totalItems} matching entries`}
+              ? 'Loading records...'
+              : `${pagination.totalItems} matching records`}
           </span>
         </div>
         <div className="table-wrapper">
@@ -901,7 +917,7 @@ function RecordsPage({ session }) {
                   <td className={`type-pill type-${record.type}`}>{record.type}</td>
                   <td>{formatCurrency(record.amount)}</td>
                   <td>{record.notes || '-'}</td>
-                  <td>{record.deletedAt ? 'Soft-deleted' : 'Active'}</td>
+                  <td>{record.deletedAt ? 'Archived' : 'Active'}</td>
                   {isAdmin ? (
                     <td className="action-cell">
                       <button
@@ -1042,11 +1058,11 @@ function UsersPage({ session }) {
       <section className="page-header">
         <div>
           <p className="eyebrow">User & Role Management</p>
-          <h2>Admin-only role assignment and account status</h2>
+          <h2>Access and account administration</h2>
         </div>
         <p className="header-copy">
-          This is where the access model is managed. New users receive a mock
-          token so the system stays easy to demo locally.
+          Manage workspace access, account status, and responsibility levels
+          from a single administrative view.
         </p>
       </section>
 
@@ -1057,7 +1073,7 @@ function UsersPage({ session }) {
         <form className="panel form-panel" onSubmit={submitUser}>
           <div className="panel-header">
             <h3>{editingId ? 'Update user' : 'Create user'}</h3>
-            <span>Roles: viewer, analyst, admin</span>
+            <span>Assign the appropriate access profile and account status</span>
           </div>
           <div className="form-grid">
             <input
@@ -1101,7 +1117,7 @@ function UsersPage({ session }) {
               {editingId ? 'Save user' : 'Create user'}
             </button>
             <button type="button" className="ghost-button" onClick={resetForm}>
-              Clear
+              Reset form
             </button>
           </div>
         </form>
@@ -1117,7 +1133,7 @@ function UsersPage({ session }) {
                 <div>
                   <strong>{user.name}</strong>
                   <span>
-                    {user.email} - {user.role} - {user.status}
+                    {user.email} - {formatRole(user.role)} - {formatStatus(user.status)}
                   </span>
                 </div>
                 <button
@@ -1139,7 +1155,7 @@ function UsersPage({ session }) {
 function ForbiddenPage() {
   return (
     <div className="screen-state">
-      This role does not have access to the requested route.
+      You do not have access to this area with the current account.
     </div>
   )
 }

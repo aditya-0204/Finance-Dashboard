@@ -249,11 +249,11 @@ function getTokenFromRequest(request) {
 
 function requirePermission(actor, permission) {
   if (!actor) {
-    throw createError(401, 'Authentication is required for this endpoint.')
+    throw createError(401, 'Authentication is required to access this resource.')
   }
 
   if (actor.status !== 'active') {
-    throw createError(403, 'This user account is inactive.')
+    throw createError(403, 'This account is inactive.')
   }
 
   if (!rolePermissions[actor.role]?.includes(permission)) {
@@ -503,7 +503,7 @@ async function handleRequest(request, response) {
     }
 
     sendJson(response, 200, {
-      message: 'Login successful.',
+      message: 'Sign-in completed successfully.',
       token: user.token,
       user: buildUserResponse(user),
     })
@@ -643,7 +643,7 @@ async function handleRequest(request, response) {
     await writeDatabase(database)
 
     sendJson(response, 200, {
-      message: 'Record soft-deleted successfully.',
+      message: 'Record archived successfully.',
       record: sanitizeRecord(record),
     })
     return
@@ -673,7 +673,7 @@ async function handleRequest(request, response) {
     await writeDatabase(database)
 
     sendJson(response, 200, {
-      message: 'User updated successfully.',
+      message: 'User profile updated successfully.',
       user: buildUserResponse(user),
     })
     return

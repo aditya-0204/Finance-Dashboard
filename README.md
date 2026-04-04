@@ -1,6 +1,6 @@
-# Finance Dashboard Assignment
+# Finance Operations Dashboard
 
-This project implements the requested finance data processing and access control system as a small full-stack app:
+This project delivers a finance operations dashboard with governed access controls, record management, and executive reporting:
 
 - React frontend with `react-router-dom`
 - Node.js backend using the built-in `http` module
@@ -28,13 +28,13 @@ This project implements the requested finance data processing and access control
 
 ## Access model
 
-- `viewer`: can read dashboard summaries only
-- `analyst`: can read summaries and financial records
-- `admin`: can manage users and fully manage records
+- `viewer`: executive summary access
+- `analyst`: reporting and record review access
+- `admin`: full record and user administration access
 
-The frontend hides routes based on permissions, but the backend is the real enforcement layer.
+The frontend adapts navigation by account profile, while the backend remains the enforcement layer for every protected action.
 
-## Seeded demo accounts
+## Seeded accounts
 
 Use any of these on the login screen:
 
@@ -42,7 +42,7 @@ Use any of these on the login screen:
 - `analyst@finboard.local`
 - `viewer@finboard.local`
 
-There is also an inactive seeded user for testing access denial:
+An inactive account is also included for access-control testing:
 
 - `inactive@finboard.local`
 
@@ -127,14 +127,14 @@ Examples of validation handled by the backend:
 
 This project uses a simple JSON file at `server/data/storage.json`. On first run, the backend creates the file with seed users and sample finance records.
 
-This was chosen to keep the submission easy to review and run without requiring external database setup.
+This approach keeps the project easy to review and run without external database setup.
 
 ## Assumptions
 
 - Summary data should be visible to every active signed-in user
 - Viewers should not see raw financial records
 - Soft-deleted records should be excluded from summary calculations
-- Mock auth is acceptable for a local assignment submission
+- Mock authentication is sufficient for local evaluation and demonstration
 
 ## Verification completed
 
