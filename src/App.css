@@ -1,10 +1,9 @@
 :root {
-  font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #19212e;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #16202d;
   background:
-    radial-gradient(circle at top left, rgba(255, 216, 189, 0.7), transparent 28%),
-    radial-gradient(circle at top right, rgba(176, 217, 255, 0.72), transparent 30%),
-    linear-gradient(180deg, #f5efe6 0%, #edf3f9 48%, #edf5f3 100%);
+    radial-gradient(circle at top left, rgba(62, 112, 168, 0.08), transparent 24%),
+    linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -34,7 +33,7 @@ button {
 }
 
 code {
-  background: rgba(11, 37, 69, 0.08);
+  background: rgba(18, 55, 95, 0.08);
   padding: 0.12rem 0.35rem;
   border-radius: 0.4rem;
 }
@@ -64,11 +63,10 @@ code {
 
 .login-copy,
 .login-panel {
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(86, 114, 145, 0.14);
-  border-radius: 1.8rem;
-  box-shadow: 0 28px 60px rgba(31, 55, 82, 0.1);
-  backdrop-filter: blur(12px);
+  background: #ffffff;
+  border: 1px solid rgba(86, 114, 145, 0.12);
+  border-radius: 1.35rem;
+  box-shadow: 0 18px 40px rgba(17, 38, 63, 0.08);
 }
 
 .login-copy {
@@ -80,11 +78,11 @@ code {
 .login-copy::after {
   content: '';
   position: absolute;
-  inset: auto -10% -20% auto;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(50, 110, 186, 0.2), transparent 66%);
+  inset: 0 0 auto auto;
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(135deg, rgba(43, 91, 143, 0.08), transparent);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 
 .login-panel {
@@ -97,10 +95,11 @@ code {
 
 .eyebrow {
   margin: 0 0 0.75rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #305d8f;
+  color: #4b6988;
+  font-weight: 600;
 }
 
 h1,
@@ -111,10 +110,11 @@ p {
 }
 
 h1 {
-  font-size: clamp(2.3rem, 6vw, 4.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
   margin-bottom: 1rem;
+  color: #122033;
 }
 
 h2 {
@@ -134,7 +134,7 @@ h3 {
 .list-row span,
 .metric-card span,
 .path-hint {
-  color: #58657a;
+  color: #637286;
 }
 
 .account-grid {
@@ -159,11 +159,12 @@ h3 {
 .hero-chips span {
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
-  background: rgba(18, 65, 111, 0.08);
-  color: #1c4e7d;
-  font-size: 0.84rem;
+  background: #eef4fa;
+  color: #325678;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  border: 1px solid rgba(70, 103, 139, 0.12);
 }
 
 .hero-stat-grid {
@@ -172,8 +173,8 @@ h3 {
 
 .hero-stat {
   padding: 1rem 1.05rem;
-  border-radius: 1.15rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(239, 245, 251, 0.88));
+  border-radius: 1rem;
+  background: #f8fbfe;
   border: 1px solid rgba(44, 86, 129, 0.1);
 }
 
@@ -190,10 +191,10 @@ h3 {
 .spotlight-card,
 .hero-stat,
 .activity-card {
-  background: rgba(255, 255, 255, 0.88);
+  background: #ffffff;
   border: 1px solid rgba(86, 114, 145, 0.14);
-  border-radius: 1.25rem;
-  box-shadow: 0 18px 45px rgba(31, 55, 82, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 14px 32px rgba(31, 55, 82, 0.06);
 }
 
 .account-card {
@@ -211,11 +212,12 @@ h3 {
   margin-bottom: 0.8rem;
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
-  background: #dbeaf9;
-  color: #20466d;
-  font-size: 0.84rem;
+  background: #eef4f9;
+  color: #26496d;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 .primary-button,
@@ -230,14 +232,14 @@ h3 {
 }
 
 .primary-button {
-  background: linear-gradient(135deg, #164a7b, #2b78b4);
+  background: linear-gradient(135deg, #163956, #285b86);
   color: #fff;
 }
 
 .ghost-button {
-  background: rgba(8, 47, 86, 0.06);
-  color: #173f68;
-  border-color: rgba(23, 63, 104, 0.12);
+  background: #f4f8fb;
+  color: #1c446c;
+  border-color: rgba(23, 63, 104, 0.14);
 }
 
 .primary-button:hover,
@@ -263,16 +265,15 @@ h3 {
   align-content: start;
   padding: 2rem 1.4rem;
   background:
-    radial-gradient(circle at top, rgba(110, 180, 255, 0.24), transparent 24%),
-    linear-gradient(180deg, rgba(12, 31, 53, 0.98), rgba(20, 59, 98, 0.94)),
-    #113052;
+    linear-gradient(180deg, #102437, #183650),
+    #102437;
   color: #f4f8fc;
 }
 
 .sidebar-accent {
   padding: 1rem 1.05rem;
-  border-radius: 1.2rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -303,12 +304,12 @@ h3 {
   text-decoration: none;
   color: rgba(255, 255, 255, 0.84);
   padding: 0.85rem 1rem;
-  border-radius: 1rem;
+  border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.04);
 }
 
 .nav-link-active {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
 }
 
@@ -323,9 +324,10 @@ h3 {
   width: fit-content;
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  background: #e6f5ea;
+  background: #edf7f0;
   color: #25633a;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .content-panel {
@@ -363,7 +365,7 @@ h3 {
   padding: 1.2rem;
   display: grid;
   gap: 0.45rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 248, 252, 0.92));
+  background: linear-gradient(180deg, #ffffff, #f8fbfd);
 }
 
 .metric-card strong {
@@ -372,18 +374,24 @@ h3 {
 
 .panel {
   padding: 1.2rem;
-  background: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
 }
 
 .panel-header,
-.button-row,
 .pagination-row,
 .list-row {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  margin-top: 1rem;
 }
 
 .list-stack {
@@ -435,9 +443,7 @@ h3 {
 
 .spotlight-primary {
   color: #f7fbff;
-  background:
-    radial-gradient(circle at top right, rgba(142, 208, 255, 0.3), transparent 30%),
-    linear-gradient(135deg, #0f3c68, #1f6798);
+  background: linear-gradient(135deg, #173a57, #29577b);
 }
 
 .spotlight-primary span,
@@ -461,7 +467,7 @@ h3 {
   width: 100%;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(16, 60, 104, 0.08);
+  background: #e7edf3;
 }
 
 .mini-bar {
@@ -477,12 +483,13 @@ h3 {
 
 .mini-bar span,
 .trend-income span {
-  background: linear-gradient(90deg, #2b78b4, #67b2eb);
+  background: linear-gradient(90deg, #2b5f8f, #4d8dc5);
 }
 
 .trend-block {
   display: grid;
   gap: 0.7rem;
+  padding: 0.2rem 0 0.6rem;
 }
 
 .trend-heading {
@@ -492,7 +499,20 @@ h3 {
 
 .trend-bars {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.65rem;
+}
+
+.trend-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.trend-label {
+  font-size: 0.82rem;
+  color: #6b7a8c;
+  font-weight: 600;
 }
 
 .trend-bar {
@@ -500,7 +520,42 @@ h3 {
 }
 
 .trend-expense span {
-  background: linear-gradient(90deg, #d2814f, #efb183);
+  background: linear-gradient(90deg, #bf7d4d, #dca47b);
+}
+
+.trend-value {
+  font-size: 0.88rem;
+  color: #203145;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: #5e6d80;
+}
+
+.legend-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.legend-income {
+  background: #3b76ac;
+}
+
+.legend-expense {
+  background: #cc8a5b;
 }
 
 .activity-grid {
@@ -512,7 +567,7 @@ h3 {
   padding: 1rem;
   display: grid;
   gap: 0.5rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(245, 249, 252, 0.92));
+  background: linear-gradient(180deg, #ffffff, #f8fbfd);
 }
 
 .activity-card p {
@@ -612,7 +667,8 @@ td {
 
 .action-cell {
   display: flex;
-  gap: 0.45rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .small-button {
@@ -668,6 +724,11 @@ td {
 
   .hero-chips {
     grid-template-columns: repeat(2, max-content);
+  }
+
+  .trend-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .page-header,

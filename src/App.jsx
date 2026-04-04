@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BrowserRouter,
   NavLink,
@@ -446,7 +446,7 @@ function OverviewPage({ token }) {
         <article className="panel">
           <div className="panel-header">
             <h3>Category-wise totals</h3>
-            <span>Income minus expenses by bucket</span>
+            <span>Net contribution by category after expenses</span>
           </div>
           <div className="list-stack">
             {summary.categoryTotals.map((item) => (
@@ -480,8 +480,20 @@ function OverviewPage({ token }) {
 
         <article className="panel">
           <div className="panel-header">
-            <h3>Monthly trend</h3>
-            <span>Simple aggregated series for a dashboard chart feed</span>
+            <div>
+              <h3>Monthly trend</h3>
+              <span>Blue shows income and amber shows expenses for each month</span>
+            </div>
+            <div className="chart-legend">
+              <span className="legend-item">
+                <i className="legend-dot legend-income"></i>
+                Income
+              </span>
+              <span className="legend-item">
+                <i className="legend-dot legend-expense"></i>
+                Expense
+              </span>
+            </div>
           </div>
           <div className="list-stack">
             {summary.monthlyTrends.map((item) => (
@@ -497,29 +509,41 @@ function OverviewPage({ token }) {
                   <strong>{formatCurrency(item.net)}</strong>
                 </div>
                 <div className="trend-bars">
-                  <div className="trend-bar trend-income">
-                    <span
-                      style={{
-                        width: `${Math.min(
-                          100,
-                          (item.income /
-                            Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                  <div className="trend-row">
+                    <span className="trend-label">Income</span>
+                    <div className="trend-bar trend-income">
+                      <span
+                        style={{
+                          width: `${Math.min(
                             100,
-                        )}%`,
-                      }}
-                    />
+                            (item.income /
+                              Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                              100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <strong className="trend-value">
+                      {formatCurrency(item.income)}
+                    </strong>
                   </div>
-                  <div className="trend-bar trend-expense">
-                    <span
-                      style={{
-                        width: `${Math.min(
-                          100,
-                          (item.expenses /
-                            Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                  <div className="trend-row">
+                    <span className="trend-label">Expense</span>
+                    <div className="trend-bar trend-expense">
+                      <span
+                        style={{
+                          width: `${Math.min(
                             100,
-                        )}%`,
-                      }}
-                    />
+                            (item.expenses /
+                              Math.max(summary.totals.income, summary.totals.expenses, 1)) *
+                              100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <strong className="trend-value">
+                      {formatCurrency(item.expenses)}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -555,6 +579,7 @@ function OverviewPage({ token }) {
 
 function RecordsPage({ session }) {
   const isAdmin = hasPermission(session.user, 'records:write')
+  const recordFormRef = useRef(null)
   const [records, setRecords] = useState([])
   const [pagination, setPagination] = useState({
     page: 1,
@@ -672,6 +697,8 @@ function RecordsPage({ session }) {
   }
 
   function beginEdit(record) {
+    setError('')
+    setNotice(`Editing record: ${record.category} on ${record.date}`)
     setEditingId(record.id)
     setForm({
       amount: String(record.amount),
@@ -680,9 +707,24 @@ function RecordsPage({ session }) {
       date: record.date,
       notes: record.notes,
     })
+
+    window.requestAnimationFrame(() => {
+      recordFormRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
   }
 
   async function deleteRecord(id) {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this record? This performs a soft delete.',
+    )
+
+    if (!confirmed) {
+      return
+    }
+
     setError('')
     setNotice('')
     setLoading(true)
@@ -766,7 +808,7 @@ function RecordsPage({ session }) {
       </section>
 
       {isAdmin ? (
-        <form className="panel form-panel" onSubmit={submitRecord}>
+        <form ref={recordFormRef} className="panel form-panel" onSubmit={submitRecord}>
           <div className="panel-header">
             <h3>{editingId ? 'Update record' : 'Create record'}</h3>
             <span>Validation happens on the backend before persistence</span>
