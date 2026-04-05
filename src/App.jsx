@@ -99,12 +99,30 @@ function formatDate(value) {
   }).format(new Date(value))
 }
 
+function getInitialTheme() {
+  const savedTheme = window.localStorage.getItem('finance-theme')
+
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    return savedTheme
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
+}
+
 function App() {
+  const [theme, setTheme] = useState(getInitialTheme)
   const [session, setSession] = useState(() => {
     const saved = window.localStorage.getItem('finance-session')
     return saved ? JSON.parse(saved) : { token: '', user: null }
   })
   const [authLoading, setAuthLoading] = useState(() => Boolean(session.token))
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('finance-theme', theme)
+  }, [theme])
 
   useEffect(() => {
     if (!session.token) {
@@ -161,6 +179,10 @@ function App() {
     window.localStorage.removeItem('finance-session')
   }
 
+  function toggleTheme() {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  }
+
   if (authLoading) {
     return <div className="screen-state">Restoring session...</div>
   }
@@ -174,13 +196,20 @@ function App() {
             session.user ? (
               <Navigate to="/overview" replace />
             ) : (
-              <LoginPage onLogin={handleLogin} />
+              <LoginPage onLogin={handleLogin} theme={theme} onToggleTheme={toggleTheme} />
             )
           }
         />
         <Route element={<ProtectedRoute session={session} />}>
           <Route
-            element={<AppShell session={session} onLogout={handleLogout} />}
+            element={
+              <AppShell
+                session={session}
+                onLogout={handleLogout}
+                theme={theme}
+                onToggleTheme={toggleTheme}
+              />
+            }
           >
             <Route index element={<Navigate to="/overview" replace />} />
             <Route
@@ -229,7 +258,7 @@ function PermissionRoute({ allowed, children }) {
   return allowed ? children : <Navigate to="/forbidden" replace />
 }
 
-function AppShell({ session, onLogout }) {
+function AppShell({ session, onLogout, theme, onToggleTheme }) {
   const navigation = useMemo(
     () =>
       [
@@ -255,6 +284,8 @@ function AppShell({ session, onLogout }) {
             controls, and operational oversight.
           </p>
         </div>
+
+        <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
 
         <div className="sidebar-accent">
           <span className="accent-label">Access Profile</span>
@@ -297,7 +328,7 @@ function AppShell({ session, onLogout }) {
   )
 }
 
-function LoginPage({ onLogin }) {
+function LoginPage({ onLogin, theme, onToggleTheme }) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -331,6 +362,7 @@ function LoginPage({ onLogin }) {
     <div className="login-screen">
       <section className="login-hero">
         <div className="login-copy">
+          <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
           <p className="eyebrow">Finance Operations Platform</p>
           <h1>Professional financial oversight with secure, role-aware workflows.</h1>
           <p className="lead-copy">
@@ -1207,6 +1239,19 @@ function MetricCard({ label, value }) {
       <span>{label}</span>
       <strong>{value}</strong>
     </article>
+  )
+}
+
+function ThemeToggle({ theme, onToggleTheme }) {
+  return (
+    <button
+      type="button"
+      className="theme-toggle"
+      onClick={onToggleTheme}
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+    >
+      {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+    </button>
   )
 }
 
