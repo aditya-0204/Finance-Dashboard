@@ -12,19 +12,34 @@ import './App.css'
 
 const demoAccounts = [
   {
+    name: 'Riya Kapoor',
     role: 'Admin',
-    email: 'admin@finboard.local',
+    email: 'riya.kapoor@finboard.local',
     detail: 'Full operational access across records, reporting, and user administration.',
   },
   {
+    name: 'Aarav Mehta',
+    role: 'Admin',
+    email: 'aarav.mehta@finboard.local',
+    detail: 'Administrative access for platform operations, data updates, and user management.',
+  },
+  {
+    name: 'Neha Sharma',
     role: 'Analyst',
-    email: 'analyst@finboard.local',
+    email: 'neha.sharma@finboard.local',
     detail: 'Access to operational records and reporting for review and analysis.',
   },
   {
+    name: 'Priya Nair',
     role: 'Viewer',
-    email: 'viewer@finboard.local',
+    email: 'priya.nair@finboard.local',
     detail: 'Read-only access to executive reporting and portfolio-level metrics.',
+  },
+  {
+    name: 'Karan Iyer',
+    role: 'Viewer',
+    email: 'karan.iyer@finboard.local',
+    detail: 'Inactive demo account for validating access restrictions.',
   },
 ]
 
@@ -283,11 +298,19 @@ function AppShell({ session, onLogout }) {
 }
 
 function LoginPage({ onLogin }) {
-  const [loadingEmail, setLoadingEmail] = useState('')
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  async function startDemoSession(email) {
-    setLoadingEmail(email)
+  async function submitLogin(event) {
+    event.preventDefault()
+
+    if (!email.trim()) {
+      setError('Enter a valid email address to continue.')
+      return
+    }
+
+    setLoading(true)
     setError('')
 
     try {
@@ -295,8 +318,13 @@ function LoginPage({ onLogin }) {
     } catch (requestError) {
       setError(requestError.message)
     } finally {
-      setLoadingEmail('')
+      setLoading(false)
     }
+  }
+
+  function useDemoEmail(nextEmail) {
+    setEmail(nextEmail)
+    setError('')
   }
 
   return (
@@ -335,24 +363,42 @@ function LoginPage({ onLogin }) {
         <div className="login-panel">
           <div className="login-panel-head">
             <p className="eyebrow">Workspace Access</p>
-            <h2>Select an account to continue</h2>
+            <h2>Sign in to continue</h2>
           </div>
           {error ? <p className="error-banner">{error}</p> : null}
+          <form className="login-form" onSubmit={submitLogin}>
+            <label className="login-field">
+              <span>Email address</span>
+              <input
+                type="email"
+                placeholder="name@company.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </label>
+            <button type="submit" className="primary-button" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+          <div className="login-demo-head">
+            <p className="eyebrow">Demo Credentials</p>
+            <span>Select an email below to autofill the sign-in form.</span>
+          </div>
           <section className="account-grid">
             {demoAccounts.map((account) => (
               <article key={account.email} className="account-card">
                 <p className="account-role">{account.role}</p>
-                <h2>{account.email}</h2>
+                <h2>{account.name}</h2>
+                <p>
+                  <strong>{account.email}</strong>
+                </p>
                 <p>{account.detail}</p>
                 <button
                   type="button"
-                  className="primary-button"
-                  disabled={loadingEmail === account.email}
-                  onClick={() => startDemoSession(account.email)}
+                  className="ghost-button"
+                  onClick={() => useDemoEmail(account.email)}
                 >
-                  {loadingEmail === account.email
-                    ? 'Signing in...'
-                    : 'Open workspace'}
+                  Use this email
                 </button>
               </article>
             ))}

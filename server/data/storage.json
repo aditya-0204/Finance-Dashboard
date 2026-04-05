@@ -2,39 +2,48 @@
   "users": [
     {
       "id": "usr_admin_1",
-      "name": "Aarav Mehta",
-      "email": "admin@finboard.local",
+      "name": "Riya Kapoor",
+      "email": "riya.kapoor@finboard.local",
       "role": "admin",
       "status": "active",
-      "token": "admin-token",
+      "token": "riya-admin-token",
       "createdAt": "2026-03-20T08:00:00.000Z"
     },
     {
+      "id": "usr_admin_2",
+      "name": "Aarav Mehta",
+      "email": "aarav.mehta@finboard.local",
+      "role": "admin",
+      "status": "active",
+      "token": "aarav-admin-token",
+      "createdAt": "2026-03-20T08:10:00.000Z"
+    },
+    {
       "id": "usr_analyst_1",
-      "name": "Riya Sharma",
-      "email": "analyst@finboard.local",
+      "name": "Neha Sharma",
+      "email": "neha.sharma@finboard.local",
       "role": "analyst",
       "status": "active",
-      "token": "analyst-token",
-      "createdAt": "2026-03-20T08:10:00.000Z"
+      "token": "neha-analyst-token",
+      "createdAt": "2026-03-20T08:20:00.000Z"
     },
     {
       "id": "usr_viewer_1",
       "name": "Priya Nair",
-      "email": "viewer@finboard.local",
+      "email": "priya.nair@finboard.local",
       "role": "viewer",
       "status": "active",
-      "token": "viewer-token",
-      "createdAt": "2026-03-20T08:20:00.000Z"
+      "token": "priya-viewer-token",
+      "createdAt": "2026-03-20T08:30:00.000Z"
     },
     {
       "id": "usr_inactive_1",
       "name": "Karan Iyer",
-      "email": "inactive@finboard.local",
+      "email": "karan.iyer@finboard.local",
       "role": "viewer",
       "status": "inactive",
-      "token": "inactive-token",
-      "createdAt": "2026-03-20T08:30:00.000Z"
+      "token": "karan-inactive-token",
+      "createdAt": "2026-03-20T08:40:00.000Z"
     }
   ],
   "records": [
