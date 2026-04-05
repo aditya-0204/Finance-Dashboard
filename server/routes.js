@@ -1,15 +1,22 @@
 import { buildUserResponse, getTokenFromRequest, requirePermission } from './lib/auth.js'
 import { createError } from './lib/errors.js'
 import { parseBody, sendJson } from './lib/http.js'
-import {
-  buildSummary,
-  filterRecords,
-  parsePagination,
-  sanitizeRecord,
-  validateRecordInput,
-} from './lib/records.js'
 import { readDatabase, writeDatabase } from './lib/storage.js'
-import { validateUserInput } from './lib/users.js'
+import {
+  archiveRecord,
+  createRecord,
+  getSummary,
+  listRecords,
+  toRecordResponse,
+  updateRecord,
+} from './models/recordModel.js'
+import {
+  createUser,
+  findUserByEmail,
+  findUserByToken,
+  listUsers,
+  updateUser,
+} from './models/userModel.js'
 
 export async function handleRequest(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`)
@@ -26,7 +33,7 @@ export async function handleRequest(request, response) {
 
   const database = await readDatabase()
   const token = getTokenFromRequest(request)
-  const actor = database.users.find((user) => user.token === token) ?? null
+  const actor = findUserByToken(database, token)
 
   if (request.method === 'POST' && url.pathname === '/api/auth/login') {
     await handleLogin(request, response, database)
@@ -41,13 +48,13 @@ export async function handleRequest(request, response) {
 
   if (request.method === 'GET' && url.pathname === '/api/summary') {
     requirePermission(actor, 'summary:read')
-    sendJson(response, 200, buildSummary(database.records))
+    sendJson(response, 200, getSummary(database))
     return
   }
 
   if (request.method === 'GET' && url.pathname === '/api/records') {
     requirePermission(actor, 'records:read')
-    sendJson(response, 200, buildRecordsListResponse(database.records, url))
+    sendJson(response, 200, listRecords(database, url))
     return
   }
 
@@ -60,7 +67,7 @@ export async function handleRequest(request, response) {
   if (request.method === 'GET' && url.pathname === '/api/users') {
     requirePermission(actor, 'users:manage')
     sendJson(response, 200, {
-      data: database.users.map(buildUserResponse),
+      data: listUsers(database),
     })
     return
   }
@@ -106,7 +113,7 @@ async function handleLogin(request, response, database) {
     })
   }
 
-  const user = database.users.find((entry) => entry.email === email)
+  const user = findUserByEmail(database, email)
 
   if (!user) {
     throw createError(404, 'No user exists for the provided email.')
@@ -123,102 +130,42 @@ async function handleLogin(request, response, database) {
   })
 }
 
-function buildRecordsListResponse(records, url) {
-  const filteredRecords = filterRecords(records, url).sort((left, right) =>
-    right.date.localeCompare(left.date),
-  )
-  const { page, pageSize } = parsePagination(url)
-  const startIndex = (page - 1) * pageSize
-
-  return {
-    data: filteredRecords
-      .slice(startIndex, startIndex + pageSize)
-      .map(sanitizeRecord),
-    pagination: {
-      page,
-      pageSize,
-      totalItems: filteredRecords.length,
-      totalPages: Math.max(1, Math.ceil(filteredRecords.length / pageSize)),
-    },
-  }
-}
-
 async function handleCreateRecord(request, response, database, actor) {
   const body = await parseBody(request)
-  const validatedRecord = validateRecordInput(body)
-  const timestamp = new Date().toISOString()
+  const newRecord = createRecord(database, actor, body)
 
-  const newRecord = {
-    id: `rec_${Date.now()}`,
-    ...validatedRecord,
-    createdBy: actor.id,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-    deletedAt: null,
-  }
-
-  database.records.push(newRecord)
   await writeDatabase(database)
 
   sendJson(response, 201, {
     message: 'Record created successfully.',
-    record: sanitizeRecord(newRecord),
+    record: toRecordResponse(newRecord),
   })
 }
 
 async function handleUpdateRecord(request, response, database, recordId) {
   const body = await parseBody(request)
-  const validatedRecord = validateRecordInput(body)
-  const record = database.records.find((entry) => entry.id === recordId)
-
-  if (!record || record.deletedAt) {
-    throw createError(404, 'Record not found.')
-  }
-
-  Object.assign(record, validatedRecord, {
-    updatedAt: new Date().toISOString(),
-  })
+  const record = updateRecord(database, recordId, body)
   await writeDatabase(database)
 
   sendJson(response, 200, {
     message: 'Record updated successfully.',
-    record: sanitizeRecord(record),
+    record: toRecordResponse(record),
   })
 }
 
 async function handleDeleteRecord(response, database, recordId) {
-  const record = database.records.find((entry) => entry.id === recordId)
-
-  if (!record || record.deletedAt) {
-    throw createError(404, 'Record not found.')
-  }
-
-  record.deletedAt = new Date().toISOString()
-  record.updatedAt = record.deletedAt
+  const record = archiveRecord(database, recordId)
   await writeDatabase(database)
 
   sendJson(response, 200, {
     message: 'Record archived successfully.',
-    record: sanitizeRecord(record),
+    record: toRecordResponse(record),
   })
 }
 
 async function handleCreateUser(request, response, database) {
   const body = await parseBody(request)
-  const validatedUser = validateUserInput(body)
-
-  if (database.users.some((user) => user.email === validatedUser.email)) {
-    throw createError(409, 'A user with that email already exists.')
-  }
-
-  const newUser = {
-    id: `usr_${Date.now()}`,
-    ...validatedUser,
-    token: `${validatedUser.role}-${Date.now()}`,
-    createdAt: new Date().toISOString(),
-  }
-
-  database.users.push(newUser)
+  const newUser = createUser(database, body)
   await writeDatabase(database)
 
   sendJson(response, 201, {
@@ -230,22 +177,7 @@ async function handleCreateUser(request, response, database) {
 
 async function handleUpdateUser(request, response, database, userId) {
   const body = await parseBody(request)
-  const validatedUser = validateUserInput(body)
-  const user = database.users.find((entry) => entry.id === userId)
-
-  if (!user) {
-    throw createError(404, 'User not found.')
-  }
-
-  const emailTaken = database.users.some(
-    (entry) => entry.email === validatedUser.email && entry.id !== user.id,
-  )
-
-  if (emailTaken) {
-    throw createError(409, 'Another user already uses that email address.')
-  }
-
-  Object.assign(user, validatedUser)
+  const user = updateUser(database, userId, body)
   await writeDatabase(database)
 
   sendJson(response, 200, {

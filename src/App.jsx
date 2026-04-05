@@ -6,7 +6,6 @@ import {
   Outlet,
   Route,
   Routes,
-  useLocation,
 } from 'react-router-dom'
 import { apiRequest } from './api'
 import './App.css'
@@ -65,22 +64,22 @@ function formatStatus(value) {
 }
 
 function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     maximumFractionDigits: 0,
   }).format(value ?? 0)
 }
 
 function formatMonth(value) {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-IN', {
     month: 'short',
     year: 'numeric',
   }).format(new Date(`${value}-01`))
 }
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-IN', {
     dateStyle: 'medium',
   }).format(new Date(value))
 }
@@ -216,8 +215,6 @@ function PermissionRoute({ allowed, children }) {
 }
 
 function AppShell({ session, onLogout }) {
-  const location = useLocation()
-
   const navigation = useMemo(
     () =>
       [
@@ -276,8 +273,6 @@ function AppShell({ session, onLogout }) {
             Sign Out
           </button>
         </div>
-
-        <div className="path-hint">{location.pathname}</div>
       </aside>
 
       <main className="content-panel">
