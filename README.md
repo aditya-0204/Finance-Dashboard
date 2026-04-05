@@ -1,4 +1,5 @@
 # Finance Operations Dashboard
+
 This project delivers a finance operations dashboard with governed access controls, record management, and executive reporting:
 
 - React frontend with `react-router-dom`
@@ -7,7 +8,9 @@ This project delivers a finance operations dashboard with governed access contro
 - Role-based access control enforced by the backend
 
 ## Features
+
 ### Core requirements covered
+
 - User creation and management
 - Role assignment for `viewer`, `analyst`, and `admin`
 - Active and inactive user states
@@ -18,11 +21,17 @@ This project delivers a finance operations dashboard with governed access contro
 - Persistent local storage in `server/data/storage.json`
 
 ### Optional enhancements included
+
 - Mock token authentication
 - Pagination for record listing
 - Soft delete for records
+- Manual sign-in form with demo credentials shown on the login screen
+- Dark mode with persisted theme preference
+- Indian localization for currency, dates, and seeded business data
+- Backend refactored into `lib`, `models`, and route modules
 
 ## Access model
+
 - `viewer`: executive summary access
 - `analyst`: reporting and record review access
 - `admin`: full record and user administration access
@@ -30,18 +39,32 @@ This project delivers a finance operations dashboard with governed access contro
 The frontend adapts navigation by account profile, while the backend remains the enforcement layer for every protected action.
 
 ## Seeded accounts
-Use any of these on the login screen:
 
-- `admin@finboard.local`
-- `analyst@finboard.local`
-- `viewer@finboard.local`
+Use the login form and enter any of these demo email addresses. The login screen also shows them as selectable references:
+
+- `Riya Kapoor` - `riya.kapoor@finboard.local` - `admin`
+- `Aarav Mehta` - `aarav.mehta@finboard.local` - `admin`
+- `Neha Sharma` - `neha.sharma@finboard.local` - `analyst`
+- `Priya Nair` - `priya.nair@finboard.local` - `viewer`
 
 An inactive account is also included for access-control testing:
 
-- `inactive@finboard.local`
+- `Karan Iyer` - `karan.iyer@finboard.local` - `viewer` - `inactive`
+
+## Frontend experience
+
+- Manual sign-in flow using demo email addresses
+- Theme toggle with light and dark mode
+- Dashboard formatted with Indian locale conventions:
+  - currency in `INR`
+  - dates and month labels in `en-IN`
+- Role-aware navigation that only shows allowed areas
+- Executive overview, record workspace, and user administration screens
 
 ## API overview
+
 ### Auth
+
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 
@@ -71,6 +94,17 @@ Supported record query params:
 - `GET /api/users`
 - `POST /api/users`
 - `PUT /api/users/:id`
+
+## Backend structure
+
+The backend has been split into smaller modules for readability and maintenance:
+
+- [server/server.js](d:\coding\College-projects\Internship\Finance_Dashboard\server\server.js): server startup and top-level error handling
+- [server/routes.js](d:\coding\College-projects\Internship\Finance_Dashboard\server\routes.js): route handling
+- [server/config.js](d:\coding\College-projects\Internship\Finance_Dashboard\server\config.js): configuration and permissions
+- [server/lib](d:\coding\College-projects\Internship\Finance_Dashboard\server\lib): shared helpers for auth, HTTP, errors, storage, records, and users
+- [server/models](d:\coding\College-projects\Internship\Finance_Dashboard\server\models): lightweight `userModel` and `recordModel` modules for data operations
+- [server/data](d:\coding\College-projects\Internship\Finance_Dashboard\server\data): seeded data and persisted storage
 
 ## Local setup
 
@@ -102,6 +136,13 @@ Backend:
 
 If needed, you can change the frontend API target with `VITE_API_URL`.
 
+## Login flow
+
+1. Start the frontend and backend.
+2. Open `http://localhost:5173`.
+3. Enter one of the seeded email addresses on the sign-in form, or click `Use this email` to autofill it.
+4. Click `Sign In`.
+
 ## Validation and error handling
 
 Examples of validation handled by the backend:
@@ -130,6 +171,5 @@ This approach keeps the project easy to review and run without external database
 
 ## Verification completed
 
-- `npm run lint`
 - `npm run build`
 - backend smoke test for `/api/health`, login, and summary retrieval
