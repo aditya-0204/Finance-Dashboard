@@ -169,7 +169,3 @@ This approach keeps the project easy to review and run without external database
 - Soft-deleted records should be excluded from summary calculations
 - Mock authentication is sufficient for local evaluation and demonstration
 
-## Verification completed
-
-- `npm run build`
-- backend smoke test for `/api/health`, login, and summary retrieval
